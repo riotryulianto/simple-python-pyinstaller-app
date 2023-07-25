@@ -31,11 +31,6 @@ pipeline {
             }
         }
         stage('Manual Approval') { 
-            agent any
-            environment { 
-                VOLUME = '$(pwd)/sources:/src'
-                IMAGE = 'cdrx/pyinstaller-linux:python2'
-            }
             steps {
                 input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk men-deploy)' 
             }
@@ -49,7 +44,7 @@ pipeline {
             steps {
                 dir(path: env.BUILD_ID) { 
                     unstash(name: 'compiled-results') 
-                    sleep 1m
+                    sleep(time: 1, unit: 'MINUTES')
                     sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'" 
                 }
             }
